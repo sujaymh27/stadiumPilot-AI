@@ -1,0 +1,6 @@
+[
+  { "id": "ELV-1", "name": "Elevator 1", "description": "South plaza to Level 2", "coordinates": { "x": 47, "y": 88 }, "levels": [0, 1, 2], "operational": true },
+  { "id": "ELV-2", "name": "Elevator 2", "description": "East concourse to Level 2", "coordinates": { "x": 86, "y": 53 }, "levels": [0, 1, 2], "operational": true },
+  { "id": "ELV-3", "name": "Elevator 3", "description": "North concourse to Level 2", "coordinates": { "x": 53, "y": 12 }, "levels": [0, 1, 2], "operational": true },
+  { "id": "ELV-4", "name": "Elevator 4", "description": "West concourse to Level 2", "coordinates": { "x": 14, "y": 48 }, "levels": [0, 1, 2], "operational": true }
+]

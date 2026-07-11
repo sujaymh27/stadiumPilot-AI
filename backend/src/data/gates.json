@@ -1,0 +1,8 @@
+[
+  { "id": "A", "name": "Gate A", "description": "Main entrance, south plaza", "coordinates": { "x": 50, "y": 95 }, "accessible": true, "level": 0 },
+  { "id": "B", "name": "Gate B", "description": "East entrance near parking lot E1", "coordinates": { "x": 90, "y": 50 }, "accessible": true, "level": 0 },
+  { "id": "C", "name": "Gate C", "description": "North entrance, transit plaza", "coordinates": { "x": 50, "y": 5 }, "accessible": true, "level": 0 },
+  { "id": "D", "name": "Gate D", "description": "West entrance near rail shuttle", "coordinates": { "x": 10, "y": 50 }, "accessible": true, "level": 0 },
+  { "id": "E", "name": "Gate E", "description": "Southeast entrance, family area", "coordinates": { "x": 80, "y": 85 }, "accessible": true, "level": 0 },
+  { "id": "F", "name": "Gate F", "description": "Southwest entrance", "coordinates": { "x": 20, "y": 85 }, "accessible": false, "level": 0 }
+]

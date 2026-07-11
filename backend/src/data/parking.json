@@ -1,0 +1,32 @@
+[
+  {
+    "id": "parking-E1",
+    "name": "Lot E1",
+    "description": "East parking, closest to Gate B",
+    "coordinates": { "x": 98, "y": 50 },
+    "capacity": 2500,
+    "accessible": true,
+    "accessibleSpaces": 80,
+    "nearestGate": "B"
+  },
+  {
+    "id": "parking-W2",
+    "name": "Lot W2",
+    "description": "West parking, near Gate D, MetLife Stadium rail shuttle",
+    "coordinates": { "x": 2, "y": 50 },
+    "capacity": 3000,
+    "accessible": true,
+    "accessibleSpaces": 100,
+    "nearestGate": "D"
+  },
+  {
+    "id": "parking-S3",
+    "name": "Lot S3",
+    "description": "South parking, main plaza entrance",
+    "coordinates": { "x": 50, "y": 99 },
+    "capacity": 4000,
+    "accessible": true,
+    "accessibleSpaces": 120,
+    "nearestGate": "A"
+  }
+]

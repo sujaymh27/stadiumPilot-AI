@@ -1,0 +1,88 @@
+{
+  "nodes": [
+    { "id": "GATE-A", "label": "Gate A", "x": 50, "y": 95, "level": 0, "type": "gate" },
+    { "id": "GATE-B", "label": "Gate B", "x": 90, "y": 50, "level": 0, "type": "gate" },
+    { "id": "GATE-C", "label": "Gate C", "x": 50, "y": 5,  "level": 0, "type": "gate" },
+    { "id": "GATE-D", "label": "Gate D", "x": 10, "y": 50, "level": 0, "type": "gate" },
+    { "id": "GATE-E", "label": "Gate E", "x": 80, "y": 85, "level": 0, "type": "gate" },
+    { "id": "GATE-F", "label": "Gate F", "x": 20, "y": 85, "level": 0, "type": "gate" },
+
+    { "id": "C0-SOUTH",  "label": "South Concourse L0",  "x": 50, "y": 85, "level": 0, "type": "concourse" },
+    { "id": "C0-EAST",   "label": "East Concourse L0",   "x": 82, "y": 50, "level": 0, "type": "concourse" },
+    { "id": "C0-NORTH",  "label": "North Concourse L0",  "x": 50, "y": 15, "level": 0, "type": "concourse" },
+    { "id": "C0-WEST",   "label": "West Concourse L0",   "x": 18, "y": 50, "level": 0, "type": "concourse" },
+    { "id": "C0-SE",     "label": "SE Concourse L0",     "x": 75, "y": 78, "level": 0, "type": "concourse" },
+    { "id": "C0-SW",     "label": "SW Concourse L0",     "x": 25, "y": 78, "level": 0, "type": "concourse" },
+    { "id": "C0-NE",     "label": "NE Concourse L0",     "x": 75, "y": 22, "level": 0, "type": "concourse" },
+    { "id": "C0-NW",     "label": "NW Concourse L0",     "x": 25, "y": 22, "level": 0, "type": "concourse" },
+
+    { "id": "SEC-100",   "label": "Section 100",  "x": 45, "y": 80, "level": 0, "type": "section" },
+    { "id": "SEC-101",   "label": "Section 101",  "x": 55, "y": 80, "level": 0, "type": "section" },
+    { "id": "SEC-110",   "label": "Section 110",  "x": 80, "y": 50, "level": 0, "type": "section" },
+    { "id": "SEC-120",   "label": "Section 120",  "x": 55, "y": 20, "level": 0, "type": "section" },
+    { "id": "SEC-130",   "label": "Section 130",  "x": 20, "y": 50, "level": 0, "type": "section" },
+
+    { "id": "ELV-1",     "label": "Elevator 1",   "x": 47, "y": 88, "level": 0, "type": "elevator", "accessibleOnly": true },
+    { "id": "ELV-2",     "label": "Elevator 2",   "x": 86, "y": 53, "level": 0, "type": "elevator", "accessibleOnly": true },
+    { "id": "ELV-3",     "label": "Elevator 3",   "x": 53, "y": 12, "level": 0, "type": "elevator", "accessibleOnly": true },
+    { "id": "ELV-4",     "label": "Elevator 4",   "x": 14, "y": 48, "level": 0, "type": "elevator", "accessibleOnly": true },
+
+    { "id": "C1-SOUTH",  "label": "South Concourse L1",  "x": 50, "y": 75, "level": 1, "type": "concourse" },
+    { "id": "C1-EAST",   "label": "East Concourse L1",   "x": 78, "y": 50, "level": 1, "type": "concourse" },
+    { "id": "C1-NORTH",  "label": "North Concourse L1",  "x": 50, "y": 25, "level": 1, "type": "concourse" },
+    { "id": "C1-WEST",   "label": "West Concourse L1",   "x": 22, "y": 50, "level": 1, "type": "concourse" },
+
+    { "id": "C2-SOUTH",  "label": "South Concourse L2",  "x": 50, "y": 70, "level": 2, "type": "concourse" },
+    { "id": "C2-EAST",   "label": "East Concourse L2",   "x": 75, "y": 50, "level": 2, "type": "concourse" },
+    { "id": "C2-NORTH",  "label": "North Concourse L2",  "x": 50, "y": 30, "level": 2, "type": "concourse" },
+    { "id": "C2-WEST",   "label": "West Concourse L2",   "x": 25, "y": 50, "level": 2, "type": "concourse" }
+  ],
+  "edges": [
+    { "from": "GATE-A",  "to": "C0-SOUTH",  "weight": 1, "accessible": true },
+    { "from": "GATE-E",  "to": "C0-SE",     "weight": 1, "accessible": true },
+    { "from": "GATE-F",  "to": "C0-SW",     "weight": 1, "accessible": false },
+    { "from": "GATE-B",  "to": "C0-EAST",   "weight": 1, "accessible": true },
+    { "from": "GATE-C",  "to": "C0-NORTH",  "weight": 1, "accessible": true },
+    { "from": "GATE-D",  "to": "C0-WEST",   "weight": 1, "accessible": true },
+
+    { "from": "C0-SOUTH", "to": "C0-SE",    "weight": 1, "accessible": true },
+    { "from": "C0-SOUTH", "to": "C0-SW",    "weight": 1, "accessible": true },
+    { "from": "C0-EAST",  "to": "C0-SE",    "weight": 1, "accessible": true },
+    { "from": "C0-EAST",  "to": "C0-NE",    "weight": 1, "accessible": true },
+    { "from": "C0-NORTH", "to": "C0-NE",    "weight": 1, "accessible": true },
+    { "from": "C0-NORTH", "to": "C0-NW",    "weight": 1, "accessible": true },
+    { "from": "C0-WEST",  "to": "C0-NW",    "weight": 1, "accessible": true },
+    { "from": "C0-WEST",  "to": "C0-SW",    "weight": 1, "accessible": true },
+
+    { "from": "C0-SOUTH", "to": "SEC-100",  "weight": 1, "accessible": true },
+    { "from": "C0-SOUTH", "to": "SEC-101",  "weight": 1, "accessible": true },
+    { "from": "C0-EAST",  "to": "SEC-110",  "weight": 1, "accessible": true },
+    { "from": "C0-NORTH", "to": "SEC-120",  "weight": 1, "accessible": true },
+    { "from": "C0-WEST",  "to": "SEC-130",  "weight": 1, "accessible": true },
+
+    { "from": "C0-SOUTH", "to": "ELV-1",    "weight": 1, "accessible": true },
+    { "from": "C0-EAST",  "to": "ELV-2",    "weight": 1, "accessible": true },
+    { "from": "C0-NORTH", "to": "ELV-3",    "weight": 1, "accessible": true },
+    { "from": "C0-WEST",  "to": "ELV-4",    "weight": 1, "accessible": true },
+
+    { "from": "ELV-1",    "to": "C1-SOUTH", "weight": 1, "accessible": true },
+    { "from": "ELV-2",    "to": "C1-EAST",  "weight": 1, "accessible": true },
+    { "from": "ELV-3",    "to": "C1-NORTH", "weight": 1, "accessible": true },
+    { "from": "ELV-4",    "to": "C1-WEST",  "weight": 1, "accessible": true },
+
+    { "from": "C1-SOUTH", "to": "C1-EAST",  "weight": 1, "accessible": true },
+    { "from": "C1-EAST",  "to": "C1-NORTH", "weight": 1, "accessible": true },
+    { "from": "C1-NORTH", "to": "C1-WEST",  "weight": 1, "accessible": true },
+    { "from": "C1-WEST",  "to": "C1-SOUTH", "weight": 1, "accessible": true },
+
+    { "from": "ELV-1",    "to": "C2-SOUTH", "weight": 1, "accessible": true },
+    { "from": "ELV-2",    "to": "C2-EAST",  "weight": 1, "accessible": true },
+    { "from": "ELV-3",    "to": "C2-NORTH", "weight": 1, "accessible": true },
+    { "from": "ELV-4",    "to": "C2-WEST",  "weight": 1, "accessible": true },
+
+    { "from": "C2-SOUTH", "to": "C2-EAST",  "weight": 1, "accessible": true },
+    { "from": "C2-EAST",  "to": "C2-NORTH", "weight": 1, "accessible": true },
+    { "from": "C2-NORTH", "to": "C2-WEST",  "weight": 1, "accessible": true },
+    { "from": "C2-WEST",  "to": "C2-SOUTH", "weight": 1, "accessible": true }
+  ]
+}

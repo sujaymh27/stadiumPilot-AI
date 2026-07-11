@@ -1,0 +1,145 @@
+[
+  {
+    "id": "amenity-food-101",
+    "type": "food",
+    "name": "Blue Plate Grill",
+    "description": "Hot dogs, burgers, and nachos",
+    "section": "101",
+    "level": 0,
+    "coordinates": { "x": 57, "y": 82 },
+    "accessible": true,
+    "hours": "Opens 2 hours before kickoff"
+  },
+  {
+    "id": "amenity-food-110",
+    "type": "food",
+    "name": "East Side Cantina",
+    "description": "Tacos, burritos, and soft drinks",
+    "section": "110",
+    "level": 0,
+    "coordinates": { "x": 82, "y": 52 },
+    "accessible": true,
+    "hours": "Opens 2 hours before kickoff"
+  },
+  {
+    "id": "amenity-food-220",
+    "type": "food",
+    "name": "North Club Bistro",
+    "description": "Club-level dining, sandwiches, salads",
+    "section": "220",
+    "level": 1,
+    "coordinates": { "x": 53, "y": 27 },
+    "accessible": true,
+    "hours": "Opens 90 minutes before kickoff"
+  },
+  {
+    "id": "amenity-food-300",
+    "type": "food",
+    "name": "Upper Deck Snack Bar",
+    "description": "Snacks, drinks, and pretzels",
+    "section": "300",
+    "level": 2,
+    "coordinates": { "x": 52, "y": 70 },
+    "accessible": true,
+    "hours": "Opens 1 hour before kickoff"
+  },
+  {
+    "id": "amenity-restroom-100",
+    "type": "restroom",
+    "name": "Restroom Block A",
+    "description": "Gender-neutral accessible restrooms",
+    "section": "100",
+    "level": 0,
+    "coordinates": { "x": 43, "y": 82 },
+    "accessible": true,
+    "hours": "All day"
+  },
+  {
+    "id": "amenity-restroom-110",
+    "type": "restroom",
+    "name": "Restroom Block B",
+    "description": "Men and women facilities",
+    "section": "110",
+    "level": 0,
+    "coordinates": { "x": 84, "y": 48 },
+    "accessible": true,
+    "hours": "All day"
+  },
+  {
+    "id": "amenity-restroom-320",
+    "type": "restroom",
+    "name": "Restroom Block C",
+    "description": "Upper level, accessible stall",
+    "section": "320",
+    "level": 2,
+    "coordinates": { "x": 48, "y": 30 },
+    "accessible": true,
+    "hours": "All day"
+  },
+  {
+    "id": "amenity-medical-A",
+    "type": "medical",
+    "name": "First Aid Station A",
+    "description": "Staffed by EMTs, AED available",
+    "section": "100",
+    "level": 0,
+    "coordinates": { "x": 40, "y": 88 },
+    "accessible": true,
+    "hours": "All day"
+  },
+  {
+    "id": "amenity-medical-C",
+    "type": "medical",
+    "name": "First Aid Station C",
+    "description": "North concourse, AED, wheelchair available",
+    "section": "120",
+    "level": 0,
+    "coordinates": { "x": 52, "y": 18 },
+    "accessible": true,
+    "hours": "All day"
+  },
+  {
+    "id": "amenity-security-A",
+    "type": "security",
+    "name": "Security Checkpoint A",
+    "description": "Main gate security screening",
+    "section": "A",
+    "level": 0,
+    "coordinates": { "x": 50, "y": 97 },
+    "accessible": true,
+    "hours": "Event days"
+  },
+  {
+    "id": "amenity-security-B",
+    "type": "security",
+    "name": "Security Checkpoint B",
+    "description": "East gate screening, accessible lane",
+    "section": "B",
+    "level": 0,
+    "coordinates": { "x": 92, "y": 52 },
+    "accessible": true,
+    "hours": "Event days"
+  },
+  {
+    "id": "amenity-merch-south",
+    "type": "merchandise",
+    "name": "Champions Shop South",
+    "description": "Official merchandise, jerseys, souvenirs",
+    "section": "101",
+    "level": 0,
+    "coordinates": { "x": 53, "y": 90 },
+    "accessible": true,
+    "hours": "Opens 3 hours before kickoff"
+  },
+  {
+    "id": "amenity-merch-north",
+    "type": "merchandise",
+    "name": "Champions Shop North",
+    "description": "Official merchandise",
+    "section": "120",
+    "level": 0,
+    "coordinates": { "x": 48, "y": 10 },
+    "accessible": true,
+    "hours": "Opens 3 hours before kickoff"
+  }
+]

@@ -1,0 +1,40 @@
+{
+  "rail": [
+    {
+      "id": "rail-meadowlands",
+      "name": "Meadowlands Station",
+      "line": "NJ Transit Meadowlands Rail Line",
+      "description": "Direct service to Penn Station NYC on event days. Platform at east plaza.",
+      "walkTime": 8,
+      "accessible": true,
+      "coordinates": { "x": 96, "y": 30 },
+      "schedule": "Trains depart 20-40 minutes after final whistle. Check NJ Transit app for exact times."
+    }
+  ],
+  "bus": [
+    {
+      "id": "bus-355",
+      "name": "NJ Transit Bus 355",
+      "description": "Service between Port Authority Bus Terminal (Midtown Manhattan) and MetLife Stadium",
+      "walkTime": 5,
+      "accessible": true,
+      "coordinates": { "x": 4, "y": 60 },
+      "schedule": "Departs Port Authority from 3 hours before kickoff. Return service after game."
+    },
+    {
+      "id": "bus-local",
+      "name": "Local Shuttle Bus",
+      "description": "Circulates between parking lots and stadium gates",
+      "walkTime": 3,
+      "accessible": true,
+      "coordinates": { "x": 50, "y": 98 },
+      "schedule": "Every 10 minutes, 2 hours before and 2 hours after game."
+    }
+  ],
+  "rideshare": {
+    "pickupZone": "East plaza, designated rideshare zone near Gate B",
+    "coordinates": { "x": 94, "y": 55 },
+    "notes": "Use NJ Turnpike Exit 16W. Follow stadium signage for rideshare drop-off."
+  },
+  "generalNotes": "MetLife Stadium is located at 1 MetLife Stadium Dr, East Rutherford, NJ. NJ Turnpike Exit 16W (from south) or 16E (from north). I-95 to NJ-3 also available. Check NJ Transit or Google Maps for live transit updates."
+}

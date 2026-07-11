@@ -1,0 +1,16 @@
+[
+  { "id": "100", "name": "Section 100", "level": 0, "zone": "lower", "side": "south", "capacity": 350, "coordinates": { "x": 45, "y": 80 }, "accessible": true },
+  { "id": "101", "name": "Section 101", "level": 0, "zone": "lower", "side": "south", "capacity": 350, "coordinates": { "x": 55, "y": 80 }, "accessible": true },
+  { "id": "110", "name": "Section 110", "level": 0, "zone": "lower", "side": "east", "capacity": 350, "coordinates": { "x": 80, "y": 50 }, "accessible": true },
+  { "id": "120", "name": "Section 120", "level": 0, "zone": "lower", "side": "north", "capacity": 350, "coordinates": { "x": 55, "y": 20 }, "accessible": true },
+  { "id": "130", "name": "Section 130", "level": 0, "zone": "lower", "side": "west", "capacity": 350, "coordinates": { "x": 20, "y": 50 }, "accessible": true },
+  { "id": "200", "name": "Section 200", "level": 1, "zone": "club", "side": "south", "capacity": 200, "coordinates": { "x": 45, "y": 75 }, "accessible": true },
+  { "id": "210", "name": "Section 210", "level": 1, "zone": "club", "side": "east", "capacity": 200, "coordinates": { "x": 78, "y": 50 }, "accessible": true },
+  { "id": "220", "name": "Section 220", "level": 1, "zone": "club", "side": "north", "capacity": 200, "coordinates": { "x": 55, "y": 25 }, "accessible": true },
+  { "id": "230", "name": "Section 230", "level": 1, "zone": "club", "side": "west", "capacity": 200, "coordinates": { "x": 22, "y": 50 }, "accessible": true },
+  { "id": "300", "name": "Section 300", "level": 2, "zone": "upper", "side": "south", "capacity": 500, "coordinates": { "x": 50, "y": 72 }, "accessible": true },
+  { "id": "310", "name": "Section 310", "level": 2, "zone": "upper", "side": "east", "capacity": 500, "coordinates": { "x": 75, "y": 50 }, "accessible": false },
+  { "id": "320", "name": "Section 320", "level": 2, "zone": "upper", "side": "north", "capacity": 500, "coordinates": { "x": 50, "y": 28 }, "accessible": true },
+  { "id": "330", "name": "Section 330", "level": 2, "zone": "upper", "side": "west", "capacity": 500, "coordinates": { "x": 25, "y": 50 }, "accessible": true },
+  { "id": "FIELD", "name": "Field Level", "level": 0, "zone": "field", "side": "center", "capacity": 100, "coordinates": { "x": 50, "y": 50 }, "accessible": true }
+]
