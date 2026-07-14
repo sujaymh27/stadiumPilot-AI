@@ -44,6 +44,7 @@ interface AppState {
   setCurrentRoute: (r: RouteData | null) => void;
   setCrowdData: (c: CrowdData | null) => void;
   clearRoute: () => void;
+  clearMessages: () => void;
 }
 
 let msgId = 0;
@@ -68,4 +69,5 @@ export const useAppStore = create<AppState>((set) => ({
   setCurrentRoute: (r) => set({ currentRoute: r }),
   setCrowdData: (c) => set({ crowdData: c }),
   clearRoute: () => set({ currentRoute: null }),
+  clearMessages: () => set({ messages: [] }),
 }));

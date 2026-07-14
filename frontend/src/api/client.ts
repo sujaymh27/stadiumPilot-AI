@@ -1,7 +1,9 @@
 import axios from 'axios';
 import type { ChatMessage } from '../store';
 
-const api = axios.create({ baseURL: '/api' });
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3001/api",
+});
 
 export interface AIQueryPayload {
   message: string;

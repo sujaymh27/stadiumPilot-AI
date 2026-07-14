@@ -15,10 +15,10 @@ interface Amenity {
 }
 
 const TYPE_ICONS: Record<string, React.ReactNode> = {
-  food:        <Utensils size={15} aria-hidden="true" />,
-  restroom:    <Droplets size={15} aria-hidden="true" />,
-  medical:     <HeartPulse size={15} aria-hidden="true" />,
-  security:    <ShieldCheck size={15} aria-hidden="true" />,
+  food: <Utensils size={15} aria-hidden="true" />,
+  restroom: <Droplets size={15} aria-hidden="true" />,
+  medical: <HeartPulse size={15} aria-hidden="true" />,
+  security: <ShieldCheck size={15} aria-hidden="true" />,
   merchandise: <ShoppingBag size={15} aria-hidden="true" />,
 };
 
