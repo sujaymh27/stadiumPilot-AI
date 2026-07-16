@@ -1,21 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { fetchTransport } from '../api/client';
+import type { TransportData } from '../api/client';
 import { Train, Bus, Car, Clock } from 'lucide-react';
 
-interface TransportData {
-  rail: { id: string; name: string; line: string; description: string; walkTime: number; schedule: string }[];
-  bus: { id: string; name: string; description: string; walkTime: number; schedule: string }[];
-  rideshare: { pickupZone: string; notes: string };
-  generalNotes: string;
-}
+// ─── Component ────────────────────────────────────────────────────────────
 
-export default function TransportPanel() {
+function TransportPanel() {
   const { t } = useTranslation();
   const [transport, setTransport] = useState<TransportData | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchTransport().then((data: TransportData) => setTransport(data)).catch(console.error);
+    fetchTransport()
+      .then(setTransport)
+      .catch(() => setError('Failed to load transport information.'));
   }, []);
 
   return (
@@ -25,11 +24,17 @@ export default function TransportPanel() {
         {t('dashboard.transport_title')}
       </h2>
 
-      {!transport ? (
+      {!transport && !error && (
         <p className="panel-loading" role="status">Loading transport info...</p>
-      ) : (
+      )}
+
+      {error && (
+        <p className="panel-error" role="alert">{error}</p>
+      )}
+
+      {transport && (
         <div className="transport-list">
-          {transport.rail.map(r => (
+          {transport.rail.map((r) => (
             <article key={r.id} className="transport-item">
               <div className="transport-icon transport-icon--rail" aria-hidden="true">
                 <Train size={16} />
@@ -43,13 +48,13 @@ export default function TransportPanel() {
                   {r.schedule}
                 </p>
               </div>
-              <span className="transport-walk">
+              <span className="transport-walk" aria-label={`${r.walkTime} minute walk`}>
                 {r.walkTime} min walk
               </span>
             </article>
           ))}
 
-          {transport.bus.map(b => (
+          {transport.bus.map((b) => (
             <article key={b.id} className="transport-item">
               <div className="transport-icon transport-icon--bus" aria-hidden="true">
                 <Bus size={16} />
@@ -62,7 +67,7 @@ export default function TransportPanel() {
                   {b.schedule}
                 </p>
               </div>
-              <span className="transport-walk">
+              <span className="transport-walk" aria-label={`${b.walkTime} minute walk`}>
                 {b.walkTime} min walk
               </span>
             </article>
@@ -78,8 +83,14 @@ export default function TransportPanel() {
               <p className="transport-schedule">{transport.rideshare.notes}</p>
             </div>
           </article>
+
+          {transport.generalNotes && (
+            <p className="transport-notes">{transport.generalNotes}</p>
+          )}
         </div>
       )}
     </section>
   );
 }
+
+export default memo(TransportPanel);

@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 
+// ─── Domain types ─────────────────────────────────────────────────────────
+
 export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
@@ -8,12 +10,23 @@ export interface ChatMessage {
   toolsUsed?: string[];
 }
 
+export interface RouteNode {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  level: number;
+  type: string;
+}
+
 export interface RouteData {
   path: string[];
-  nodes: { id: string; label: string; x: number; y: number; level: number; type: string }[];
+  nodes: RouteNode[];
   instructions: string[];
   estimatedMinutes: number;
   accessible: boolean;
+  crowdAdjusted?: boolean;
+  totalSteps?: number;
 }
 
 export interface SectionCrowd {
@@ -27,17 +40,27 @@ export interface SectionCrowd {
 
 export interface CrowdData {
   phase: string;
+  timestamp?: string;
   overallDensity: number;
   sections: SectionCrowd[];
   hotspots: string[];
 }
 
+// ─── Store shape ──────────────────────────────────────────────────────────
+
 interface AppState {
+  // Chat
   messages: ChatMessage[];
   isLoading: boolean;
   accessibleMode: boolean;
+
+  // Map
   currentRoute: RouteData | null;
+
+  // Crowd
   crowdData: CrowdData | null;
+
+  // Actions
   addMessage: (msg: Omit<ChatMessage, 'id' | 'timestamp'>) => void;
   setLoading: (v: boolean) => void;
   setAccessibleMode: (v: boolean) => void;
@@ -47,6 +70,7 @@ interface AppState {
   clearMessages: () => void;
 }
 
+// Auto-incrementing ID — simple and avoids external dependency for non-critical IDs
 let msgId = 0;
 
 export const useAppStore = create<AppState>((set) => ({
@@ -69,5 +93,5 @@ export const useAppStore = create<AppState>((set) => ({
   setCurrentRoute: (r) => set({ currentRoute: r }),
   setCrowdData: (c) => set({ crowdData: c }),
   clearRoute: () => set({ currentRoute: null }),
-  clearMessages: () => set({ messages: [] }),
+  clearMessages: () => set({ messages: [], currentRoute: null }),
 }));

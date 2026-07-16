@@ -1,10 +1,12 @@
+import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../store';
-import { CheckCircle, Clock, MapPin } from 'lucide-react';
+import { CheckCircle, Clock, MapPin, X, Accessibility } from 'lucide-react';
 
-export default function RoutePanel() {
+function RoutePanel() {
   const { t } = useTranslation();
-  const route = useAppStore(s => s.currentRoute);
+  const route = useAppStore((s) => s.currentRoute);
+  const clearRoute = useAppStore((s) => s.clearRoute);
 
   if (!route) {
     return (
@@ -20,10 +22,21 @@ export default function RoutePanel() {
 
   return (
     <section className="panel" aria-label={t('dashboard.route_title')}>
-      <h2 className="panel-title">
-        <MapPin size={16} aria-hidden="true" />
-        {t('dashboard.route_title')}
-      </h2>
+      <div className="route-panel-header">
+        <h2 className="panel-title">
+          <MapPin size={16} aria-hidden="true" />
+          {t('dashboard.route_title')}
+        </h2>
+        <button
+          type="button"
+          className="route-clear-btn"
+          onClick={clearRoute}
+          aria-label="Clear current route"
+          title="Clear route"
+        >
+          <X size={14} aria-hidden="true" />
+        </button>
+      </div>
 
       <div className="route-meta">
         <span className="route-badge">
@@ -32,7 +45,13 @@ export default function RoutePanel() {
         </span>
         {route.accessible && (
           <span className="route-badge route-badge--accessible" role="status">
+            <Accessibility size={13} aria-hidden="true" />
             Accessible route
+          </span>
+        )}
+        {route.crowdAdjusted && (
+          <span className="route-badge route-badge--crowd" role="status">
+            Crowd-optimised
           </span>
         )}
         <span className="route-badge">
@@ -51,3 +70,5 @@ export default function RoutePanel() {
     </section>
   );
 }
+
+export default memo(RoutePanel);

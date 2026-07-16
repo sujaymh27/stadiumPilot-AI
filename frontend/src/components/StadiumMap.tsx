@@ -1,79 +1,113 @@
-import { useEffect, useRef } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip, useMap } from 'react-leaflet';
 import { useAppStore } from '../store';
+import type { RouteNode } from '../store';
 import 'leaflet/dist/leaflet.css';
 import type { LatLngExpression } from 'leaflet';
 
-// MetLife Stadium schematic bounding box (using lat/lng analogues mapped from x/y 0-100)
+// ─── Constants ────────────────────────────────────────────────────────────
+
+/** MetLife Stadium real-world coordinates (East Rutherford, NJ) */
 const MAP_CENTER: LatLngExpression = [40.8135, -74.0745];
 const MAP_ZOOM = 16;
 
-// Convert x/y (0-100) to approximate lat/lng for schematic overlay
-function xyToLatLng(x: number, y: number): LatLngExpression {
-  // Map x: 0->-74.082, 100->-74.065  |  y: 0->40.817, 100->40.810
-  const lng = -74.082 + (x / 100) * 0.017;
-  const lat = 40.817 - (y / 100) * 0.007;
-  return [lat, lng];
-}
-
-const NODE_COLORS: Record<string, string> = {
+/** Node color by type — shared with RouteLayer */
+const NODE_COLORS: Readonly<Record<string, string>> = {
   gate: '#1a56db',
   section: '#0ea5e9',
   concourse: '#64748b',
   elevator: '#7c3aed',
 };
 
-function RouteLayer() {
-  const route = useAppStore(s => s.currentRoute);
+// ─── Coordinate mapping ────────────────────────────────────────────────────
+
+/**
+ * Convert schematic x/y coords (0-100 grid) to approximate lat/lng for map overlay.
+ * Calibrated to MetLife Stadium bounding box.
+ */
+function xyToLatLng(x: number, y: number): LatLngExpression {
+  // x: 0 → -74.082, 100 → -74.065  |  y: 0 → 40.817, 100 → 40.810
+  const lng = -74.082 + (x / 100) * 0.017;
+  const lat = 40.817 - (y / 100) * 0.007;
+  return [lat, lng];
+}
+
+// ─── Route layer (only re-renders when route changes) ─────────────────────
+
+interface RouteLayerProps {
+  nodes: RouteNode[];
+  accessible: boolean;
+}
+
+/** Inner Leaflet component — must live inside MapContainer */
+function RouteLayerInner({ nodes, accessible }: RouteLayerProps) {
   const map = useMap();
 
+  // Memoize position array so Polyline doesn't re-render on unrelated state changes
+  const positions = useMemo(
+    () => nodes.map((n) => xyToLatLng(n.x, n.y)),
+    [nodes]
+  );
+
   useEffect(() => {
-    if (route && route.nodes.length > 0) {
-      const bounds = route.nodes.map(n => xyToLatLng(n.x, n.y));
-      if (bounds.length > 0) {
-        map.fitBounds(bounds as [number, number][], { padding: [40, 40], maxZoom: 17 });
-      }
+    if (nodes.length > 0) {
+      map.fitBounds(positions as [number, number][], { padding: [40, 40], maxZoom: 17 });
     }
-  }, [route, map]);
-
-  if (!route) return null;
-
-  const positions = route.nodes.map(n => xyToLatLng(n.x, n.y));
+  }, [positions, nodes.length, map]);
 
   return (
     <>
       <Polyline
         positions={positions}
-        pathOptions={{ color: '#1a56db', weight: 4, opacity: 0.85, dashArray: route.accessible ? '8 4' : undefined }}
+        pathOptions={{
+          color: '#1a56db',
+          weight: 4,
+          opacity: 0.85,
+          dashArray: accessible ? '8 4' : undefined,
+        }}
       />
-      {route.nodes.map((node, i) => (
-        <CircleMarker
-          key={node.id}
-          center={xyToLatLng(node.x, node.y)}
-          radius={i === 0 || i === route.nodes.length - 1 ? 10 : 6}
-          pathOptions={{
-            color: '#fff',
-            fillColor: i === 0 ? '#16a34a' : i === route.nodes.length - 1 ? '#dc2626' : (NODE_COLORS[node.type] ?? '#64748b'),
-            fillOpacity: 1,
-            weight: 2,
-          }}
-        >
-          <Tooltip permanent={i === 0 || i === route.nodes.length - 1}>
-            {node.label}
-          </Tooltip>
-        </CircleMarker>
-      ))}
+      {nodes.map((node, i) => {
+        const isEndpoint = i === 0 || i === nodes.length - 1;
+        const fillColor =
+          i === 0
+            ? '#16a34a'
+            : i === nodes.length - 1
+            ? '#dc2626'
+            : (NODE_COLORS[node.type] ?? '#64748b');
+
+        return (
+          <CircleMarker
+            key={node.id}
+            center={xyToLatLng(node.x, node.y)}
+            radius={isEndpoint ? 10 : 6}
+            pathOptions={{
+              color: '#fff',
+              fillColor,
+              fillOpacity: 1,
+              weight: 2,
+            }}
+          >
+            <Tooltip permanent={isEndpoint}>{node.label}</Tooltip>
+          </CircleMarker>
+        );
+      })}
     </>
   );
 }
 
-export default function StadiumMap() {
-  const mapRef = useRef(null);
+/** Wrapper that reads from store so RouteLayerInner stays pure */
+function RouteLayer() {
+  const route = useAppStore((s) => s.currentRoute);
+  if (!route) return null;
+  return <RouteLayerInner nodes={route.nodes} accessible={route.accessible} />;
+}
 
+// ─── Main component ────────────────────────────────────────────────────────
+
+function StadiumMap() {
   return (
     <div className="map-wrapper" role="region" aria-label="Interactive stadium map">
       <MapContainer
-        ref={mapRef}
         center={MAP_CENTER}
         zoom={MAP_ZOOM}
         style={{ width: '100%', height: '100%' }}
@@ -89,3 +123,5 @@ export default function StadiumMap() {
     </div>
   );
 }
+
+export default memo(StadiumMap);

@@ -1,0 +1,7 @@
+.env
+.env.*
+.vercel
+.firebase
+dist
+node_modules
+*.log

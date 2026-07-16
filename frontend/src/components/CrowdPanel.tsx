@@ -1,25 +1,37 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore, type CrowdData } from '../store';
 import { fetchCrowd } from '../api/client';
 import { Users, AlertTriangle } from 'lucide-react';
 
-export default function CrowdPanel() {
-  const { t } = useTranslation();
-  const crowdData = useAppStore(s => s.crowdData);
-  const setCrowdData = useAppStore(s => s.setCrowdData);
+/** Interval between crowd data refreshes (30 seconds) */
+const POLL_INTERVAL_MS = 30_000;
 
-  useEffect(() => {
-    fetchCrowd().then((data: CrowdData) => setCrowdData(data)).catch(console.error);
-    const interval = setInterval(
-      () => fetchCrowd().then((data: CrowdData) => setCrowdData(data)).catch(console.error),
-      30000
-    );
-    return () => clearInterval(interval);
+/** Map crowd level to CSS class name — extracted to avoid recomputation */
+function levelClass(level: string): string {
+  return `crowd-bar crowd-bar--${level.replace('_', '-')}`;
+}
+
+function CrowdPanel() {
+  const { t } = useTranslation();
+  const crowdData = useAppStore((s) => s.crowdData);
+  const setCrowdData = useAppStore((s) => s.setCrowdData);
+
+  const loadCrowd = useCallback(async () => {
+    try {
+      const data: CrowdData = await fetchCrowd();
+      setCrowdData(data);
+    } catch (err) {
+      // Don't overwrite existing data on poll failure — just log silently
+      console.warn('[CrowdPanel] Failed to fetch crowd data:', err);
+    }
   }, [setCrowdData]);
 
-  const levelClass = (level: string) =>
-    `crowd-bar crowd-bar--${level.replace('_', '-')}`;
+  useEffect(() => {
+    void loadCrowd();
+    const interval = setInterval(loadCrowd, POLL_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, [loadCrowd]);
 
   return (
     <section className="panel" aria-label={t('dashboard.crowd_title')}>
@@ -49,11 +61,13 @@ export default function CrowdPanel() {
           )}
 
           <ul className="crowd-list" aria-label="Crowd levels by section">
-            {crowdData.sections.slice(0, 8).map(sec => (
+            {crowdData.sections.slice(0, 8).map((sec) => (
               <li key={sec.sectionId} className="crowd-item">
                 <div className="crowd-item-header">
                   <span className="crowd-section-name">{sec.sectionName}</span>
-                  <span className={`crowd-level-badge crowd-level-badge--${sec.level.replace('_', '-')}`}>
+                  <span
+                    className={`crowd-level-badge crowd-level-badge--${sec.level.replace('_', '-')}`}
+                  >
                     {t(`dashboard.crowd_level.${sec.level}`)}
                   </span>
                 </div>
@@ -70,6 +84,11 @@ export default function CrowdPanel() {
                     style={{ width: `${Math.round(sec.density * 100)}%` }}
                   />
                 </div>
+                {sec.recommendAlternate && (
+                  <p className="crowd-alternate-hint" role="status">
+                    Consider an alternate route
+                  </p>
+                )}
               </li>
             ))}
           </ul>
@@ -78,3 +97,5 @@ export default function CrowdPanel() {
     </section>
   );
 }
+
+export default memo(CrowdPanel);

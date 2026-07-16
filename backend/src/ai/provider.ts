@@ -68,25 +68,29 @@ class MockAIProvider implements AIProvider {
 
 class GeminiProvider implements AIProvider {
   private client: GoogleGenerativeAI;
+  /** Cached model instance — re-used across all queries to avoid re-init overhead */
+  private model: ReturnType<GoogleGenerativeAI['getGenerativeModel']>;
 
   constructor(apiKey: string) {
     this.client = new GoogleGenerativeAI(apiKey);
-  }
-
-  async query(req: AIQueryRequest): Promise<AIQueryResponse> {
-    const model = this.client.getGenerativeModel({
+    this.model = this.client.getGenerativeModel({
       model: 'gemini-2.0-flash',
       systemInstruction: SYSTEM_PROMPT,
       tools: [{ functionDeclarations: TOOL_DECLARATIONS as unknown as FunctionDeclaration[] }],
     });
+  }
+
+  async query(req: AIQueryRequest): Promise<AIQueryResponse> {
+    // Cap history to last 20 turns to avoid token limits
+    const cappedHistory = (req.history ?? []).slice(-20);
 
     // Build history in Gemini Content format
-    const history: Content[] = (req.history ?? []).map(h => ({
+    const history: Content[] = cappedHistory.map(h => ({
       role: h.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: h.content }],
     }));
 
-    const chat = model.startChat({ history });
+    const chat = this.model.startChat({ history });
 
     const toolsUsed: string[] = [];
     let routeData: unknown;
@@ -112,6 +116,7 @@ class GeminiProvider implements AIProvider {
             : call.args;
 
         const toolResult = dispatchTool(toolName, args);
+        console.log(`[AI] Tool call: ${toolName} => ${toolResult.success ? 'ok' : `error: ${toolResult.error}`}`);
 
         // Capture structured data for frontend
         if (toolName === 'find_route' && toolResult.success) routeData = toolResult.data;
@@ -133,6 +138,7 @@ class GeminiProvider implements AIProvider {
     }
 
     const reply = response.text();
+    if (!reply) throw new Error('Gemini returned an empty response');
 
     return { reply, toolsUsed, routeData, crowdData };
   }

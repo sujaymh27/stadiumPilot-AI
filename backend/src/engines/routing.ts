@@ -29,20 +29,65 @@ export interface RouteResult {
 
 type CrowdMap = Map<string, number>;
 
+/**
+ * Binary min-heap priority queue — O(log n) enqueue and dequeue
+ * vs the previous O(n log n) array sort approach.
+ * Critical for A* performance on large graphs.
+ */
 class PriorityQueue<T> {
-  private items: { priority: number; item: T }[] = [];
+  private heap: { priority: number; item: T }[] = [];
 
-  enqueue(item: T, priority: number) {
-    this.items.push({ priority, item });
-    this.items.sort((a, b) => a.priority - b.priority);
+  private parent(i: number): number { return (i - 1) >> 1; }
+  private left(i: number): number   { return 2 * i + 1; }
+  private right(i: number): number  { return 2 * i + 2; }
+
+  private swap(i: number, j: number): void {
+    const tmp = this.heap[i];
+    this.heap[i] = this.heap[j];
+    this.heap[j] = tmp;
+  }
+
+  private siftUp(i: number): void {
+    while (i > 0) {
+      const p = this.parent(i);
+      if (this.heap[p].priority <= this.heap[i].priority) break;
+      this.swap(p, i);
+      i = p;
+    }
+  }
+
+  private siftDown(i: number): void {
+    const n = this.heap.length;
+    while (true) {
+      let smallest = i;
+      const l = this.left(i);
+      const r = this.right(i);
+      if (l < n && this.heap[l].priority < this.heap[smallest].priority) smallest = l;
+      if (r < n && this.heap[r].priority < this.heap[smallest].priority) smallest = r;
+      if (smallest === i) break;
+      this.swap(i, smallest);
+      i = smallest;
+    }
+  }
+
+  enqueue(item: T, priority: number): void {
+    this.heap.push({ priority, item });
+    this.siftUp(this.heap.length - 1);
   }
 
   dequeue(): T | undefined {
-    return this.items.shift()?.item;
+    if (this.heap.length === 0) return undefined;
+    const top = this.heap[0].item;
+    const last = this.heap.pop()!;
+    if (this.heap.length > 0) {
+      this.heap[0] = last;
+      this.siftDown(0);
+    }
+    return top;
   }
 
   get isEmpty(): boolean {
-    return this.items.length === 0;
+    return this.heap.length === 0;
   }
 }
 
@@ -136,7 +181,9 @@ export class RoutingEngine {
 
     const pathNodes = path.map(id => this.nodes.get(id)!);
     const instructions = this.generateInstructions(pathNodes);
-    const estimatedMinutes = Math.max(1, Math.ceil(path.length * 1.5));
+    // Use actual accumulated weight for time estimate (~1 weight unit = 30 seconds walking)
+    const actualDist = dist.get(toId) ?? path.length * 3;
+    const estimatedMinutes = Math.max(1, Math.round(actualDist / 6));
 
     return {
       path,

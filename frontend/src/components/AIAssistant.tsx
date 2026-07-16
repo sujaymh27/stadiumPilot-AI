@@ -2,19 +2,43 @@ import {
   useRef,
   useState,
   useCallback,
+  useEffect,
+  memo,
   type FormEvent,
   type KeyboardEvent,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../store';
-import { queryAI, buildHistory } from '../api/client';
+import { queryAI, buildHistory, getApiErrorMessage } from '../api/client';
 import { getFallbackAnswer } from '../services/localAssistant';
 import { Send, Accessibility, Trash2, Copy, Check } from 'lucide-react';
-import type { RouteData } from '../store';
 import SuggestedQuestions from './SuggestedQuestions';
 
-export default function AIAssistant() {
+// ─── Sub-components (memoized to avoid re-renders) ────────────────────────
+
+interface ToolBadgesProps {
+  tools: string[];
+}
+
+const ToolBadges = memo(function ToolBadges({ tools }: ToolBadgesProps) {
+  if (tools.length === 0) return null;
+  return (
+    <div className="message-tools" aria-label="Tools used">
+      {tools.map((tool) => (
+        <span key={tool} className="tool-badge">
+          {tool.replace(/_/g, ' ')}
+        </span>
+      ))}
+    </div>
+  );
+});
+
+// ─── Main component ───────────────────────────────────────────────────────
+
+function AIAssistant() {
   const { t } = useTranslation();
+
+  // Granular selectors — each component slice re-renders only when its slice changes
   const messages = useAppStore((s) => s.messages);
   const isLoading = useAppStore((s) => s.isLoading);
   const accessibleMode = useAppStore((s) => s.accessibleMode);
@@ -27,12 +51,19 @@ export default function AIAssistant() {
 
   const [input, setInput] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [errorBanner, setErrorBanner] = useState<string | null>(null);
+
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  const scrollToBottom = useCallback(() => {
-    setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
-  }, []);
+  // Auto-scroll to bottom whenever messages change or loading state changes
+  useEffect(() => {
+    const timer = setTimeout(
+      () => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }),
+      80
+    );
+    return () => clearTimeout(timer);
+  }, [messages, isLoading]);
 
   const handleSubmit = useCallback(
     async (e?: FormEvent) => {
@@ -41,9 +72,9 @@ export default function AIAssistant() {
       if (!text || isLoading) return;
 
       setInput('');
+      setErrorBanner(null);
       addMessage({ role: 'user', content: text });
       setLoading(true);
-      scrollToBottom();
 
       try {
         const history = buildHistory(messages);
@@ -56,16 +87,15 @@ export default function AIAssistant() {
         });
 
         if (result.routeData) {
-          setCurrentRoute(result.routeData as RouteData);
+          setCurrentRoute(result.routeData);
         }
         if (result.crowdData) {
-          const crowd = result.crowdData as { sections?: unknown[]; phase?: string };
-          if (crowd.sections) {
-            setCrowdData(crowd as Parameters<typeof setCrowdData>[0]);
-          }
+          setCrowdData(result.crowdData);
         }
-      } catch {
-        // Gemini API unavailable — activate local assistant fallback
+      } catch (err) {
+        // Surface a user-friendly error and fall back to local assistant
+        const apiMsg = getApiErrorMessage(err);
+        setErrorBanner(apiMsg);
         const localReply = getFallbackAnswer(text);
         addMessage({
           role: 'assistant',
@@ -73,7 +103,6 @@ export default function AIAssistant() {
         });
       } finally {
         setLoading(false);
-        scrollToBottom();
       }
     },
     [
@@ -81,7 +110,6 @@ export default function AIAssistant() {
       isLoading,
       addMessage,
       setLoading,
-      scrollToBottom,
       messages,
       accessibleMode,
       setCurrentRoute,
@@ -114,15 +142,13 @@ export default function AIAssistant() {
         setCopiedId(id);
         setTimeout(() => setCopiedId(null), 2000);
       } catch {
-        // Clipboard API not available — silently ignore
+        // Clipboard API unavailable (e.g. non-HTTPS) — silently ignore
       }
     },
     [],
   );
 
-  const handleClear = useCallback(() => {
-    clearMessages();
-  }, [clearMessages]);
+  const handleClear = useCallback(() => clearMessages(), [clearMessages]);
 
   return (
     <section className="ai-panel" aria-label="AI assistant">
@@ -156,6 +182,25 @@ export default function AIAssistant() {
         </div>
       </div>
 
+      {/* Error banner — shown when API fails */}
+      {errorBanner && (
+        <div
+          className="ai-error-banner"
+          role="alert"
+          aria-live="assertive"
+        >
+          <span>{errorBanner}</span>
+          <button
+            type="button"
+            className="ai-error-dismiss"
+            onClick={() => setErrorBanner(null)}
+            aria-label="Dismiss error"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       <div className="ai-messages" aria-live="polite" aria-label="Conversation">
         {messages.length === 0 && (
           <div className="ai-welcome">
@@ -172,15 +217,7 @@ export default function AIAssistant() {
           >
             <div className="message-bubble">
               <p>{msg.content}</p>
-              {msg.toolsUsed && msg.toolsUsed.length > 0 && (
-                <div className="message-tools" aria-label="Tools used">
-                  {msg.toolsUsed.map((tool) => (
-                    <span key={tool} className="tool-badge">
-                      {tool.replace(/_/g, ' ')}
-                    </span>
-                  ))}
-                </div>
-              )}
+              {msg.toolsUsed && <ToolBadges tools={msg.toolsUsed} />}
             </div>
             <div className="message-meta">
               <time className="message-time" dateTime={msg.timestamp.toISOString()}>
@@ -244,3 +281,5 @@ export default function AIAssistant() {
     </section>
   );
 }
+
+export default memo(AIAssistant);
